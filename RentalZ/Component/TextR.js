@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
-import {  Text,TextInput, View,StyleSheet, ScrollView, TouchableOpacity, Alert, } from 'react-native';
+import {  Text,TextInput, View,StyleSheet, ScrollView, TouchableOpacity,  } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import  IconRoom  from 'react-native-vector-icons/Ionicons';
 import * as SQLite from 'expo-sqlite'
 // biến database
 const db= SQLite.openDatabase('database','1.0')
-// biến TextForm
-const TextR = ({navigation, setShow, setStatus}) => {
+
+const TextR = ({ setShow, setStatus}) => {
 
     const [information,setInformation] = useState({
         properTypes: '',
@@ -17,13 +17,18 @@ const TextR = ({navigation, setShow, setStatus}) => {
         note:'',
         report:'',
       })
-// biến timeChanges
-    const [timechanges, settimechanges] = useState()
+
     const onChange =(input)=>(value)=>{
+        console.log(value);
         setInformation({...information,[input]:value})
     }
-// biến stylefieldcolor
-    const [stylefieldcolor, setstylefieldcolor] =useState('black')
+    const onChangePrizeOfMonthly = (value) => {
+        if(value > 0 || value === ""){
+            setInformation(preState => ({...preState, priceOfMonthly: value}));
+        }
+        console.log(information.priceOfMonthly);
+    }
+
 // biến placeholder
     const placeholder=(form)=> {
         const Placeholder = {
@@ -127,9 +132,9 @@ const TextR = ({navigation, setShow, setStatus}) => {
         keyboardType='numeric'
         placeholder= "Please enter monthly rental price"
         style={styles.textIputs} 
-        name="priceOfMonthly" 
+        name="priceOfMonthly"
         value={information.priceOfMonthly} 
-        onChangeText={onChange('priceOfMonthly')}/>
+        onChangeText={value => onChangePrizeOfMonthly(value)}/>
         <Text style={styles.SeenView}>Furniture Types</Text>
         <RNPickerSelect
             useNativeAndroidPickerStyle={false}
@@ -159,6 +164,7 @@ const TextR = ({navigation, setShow, setStatus}) => {
         name="note" 
         value={information.note} 
         onChangeText={onChange('note')}/>
+       
         <Text style={styles.SeenView}>Name Of The Reporter</Text>
         <TextInput
         placeholder="Please enter your name!"
@@ -166,6 +172,7 @@ const TextR = ({navigation, setShow, setStatus}) => {
         name="report" 
         value={information.report} 
         onChangeText={onChange('report')}/>
+        
         </View>
         </ScrollView>
         <View style={styles.SeenView2}>
