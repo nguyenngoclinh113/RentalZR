@@ -31,6 +31,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 30,
     fontWeight: '400',
-    fontFamily: 'Amita-Regular'
   }
 });

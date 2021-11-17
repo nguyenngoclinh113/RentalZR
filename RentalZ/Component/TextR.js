@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {  Text,TextInput, View,StyleSheet, ScrollView, TouchableOpacity,  } from 'react-native';
+import {  Text,TextInput, View,StyleSheet, ScrollView, TouchableOpacity,Alert  } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import  IconRoom  from 'react-native-vector-icons/Ionicons';
 import * as SQLite from 'expo-sqlite'
@@ -37,12 +37,14 @@ const TextR = ({ setShow, setStatus}) => {
         }
         return Placeholder
     }
+    
+    
 // biến insertDB
     const insertDB = async(valueDB)=>{
         const{properTypes,choiceRoom,dateAndTime,priceOfMonthly,furnitureType,note,report} = valueDB
             await db.transaction((tx)=>{
                 tx.executeSql(
-                    `INSERT INTO mobieapp(
+                    `INSERT OR IGNORE INTO mobieapp(
                         propertypes,
                         bedroom,
                         createAt,
@@ -58,10 +60,26 @@ const TextR = ({ setShow, setStatus}) => {
                       (tx,result)=>{
                         console.log('insertDB successfully!');
                         console.log(result);
+                        if(result.rowsAffected < 1){
+                            Alert.alert(
+                                "Alert Title",
+                                `You can not add by the record is existed in the database`,
+                                [
+                                   
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                             );
+                        }else{
+                            console.log("insert ok")
+                            setShow(true)
+                            setStatus('')
+                        }
                     }
                 )
             })
     }
+   
+     
 // biến submit
     const submmit = (giatri) => {
         if(!giatri) return
@@ -73,8 +91,7 @@ const TextR = ({ setShow, setStatus}) => {
             setStatus('error')
         }
         else{
-            setShow(true)
-            setStatus('')
+           
             insertDB(giatri)
             setInformation({
                 properTypes: '',
@@ -125,7 +142,6 @@ const TextR = ({ setShow, setStatus}) => {
         placeholder  = {"YYYY-MM-DD"}
         onChangeText = {onChange("dateAndTime")}
         name = {"dateAndTime"}
-        keyboardType = ""
         />
         <Text style={styles.SeenView}>Monthly Rent Price</Text>
         <TextInput
@@ -163,8 +179,11 @@ const TextR = ({ setShow, setStatus}) => {
         style={styles.textIputs} 
         name="note" 
         value={information.note} 
-        onChangeText={onChange('note')}/>
-       
+        onChangeText={onChange('note')}
+        multiline={true}
+        />
+     
+          
         <Text style={styles.SeenView}>Name Of The Reporter</Text>
         <TextInput
         placeholder="Please enter your name!"
@@ -206,6 +225,7 @@ const styles = StyleSheet.create({
     },
     SeenView:{
         marginTop: 7,
+        
     },
     ViewRoll:{
         display:'flex',

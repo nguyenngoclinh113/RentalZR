@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import {useIsFocused} from '@react-navigation/native'
 import * as SQLite from 'expo-sqlite'
 import  Icon  from 'react-native-vector-icons/Ionicons';
+import NoteModal from './Open dialog/NoteModal';
 const db= SQLite.openDatabase('database','1.0')
 export default function FullInformation() {
-// biến loading để delete
+
+  // biến loading để delete
   const[loading, setLoading] = useState(false)
+  const[showNote, setShowNote] = useState(false)
+  const [id,setId] = useState()
   const deleteData = async(id)=>{
     await db.transaction((tx)=>{
       tx.executeSql("DELETE FROM mobieapp WHERE idData = ?",
@@ -19,6 +23,10 @@ export default function FullInformation() {
       }
       )
     })
+  }
+  const getIdEdit = (id)=>{
+     setId(id)
+     setShowNote(true)
   }
   // biến gọi database
   const isFocused = useIsFocused()
@@ -58,6 +66,7 @@ export default function FullInformation() {
   return (
     // thẻ View
     <View style={styles.container}>
+        <NoteModal showNote={showNote} setShowNote={setShowNote} id={id}/>
         <Text style={styles.Header}>List</Text>
         {dataobj.length===0?(
         <View style={{flex:1 ,alignItems: 'center'}}>
@@ -97,9 +106,11 @@ export default function FullInformation() {
                   <Text style={{marginLeft:5,}}>{item.furnituretype}</Text>
                   </View>
                 </View>
-                <View style={{marginTop:8,}}>
-                  <Icon name='close-outline' color='red' size={25} onPress={()=>deleteData(item.idData)} />
+                <View style={{marginTop:8,display:'flex', flexDirection:'row'}}>
+                  <Icon name='pencil' color='green' size={18} style={{marginTop:2}} onPress={()=>getIdEdit(item.idData)}/>
+                  <Icon name='close-outline' color='red' size={28} onPress={()=>deleteData(item.idData)} />
                 </View>
+                
               </View>
           )}/>
         )}

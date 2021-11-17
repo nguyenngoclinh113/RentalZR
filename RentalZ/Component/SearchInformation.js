@@ -29,6 +29,7 @@ export default function Search() {
     const objDetail = datafind.find(item=>item.idData === idDetail)
     navigation.navigate('Details',{objInfo:objDetail})
   }
+  // get all data
   const getData = async()=> {
     await db.transaction((tx)=>{
       tx.executeSql("SELECT * FROM mobieapp",

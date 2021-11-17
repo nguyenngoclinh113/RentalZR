@@ -47,6 +47,24 @@ const TableDB = async() => {
           report TEXT
       )`,
       )
+      tx.executeSql(
+        `CREATE UNIQUE INDEX rental_db ON mobieapp 
+        (
+          propertypes,
+          bedroom,
+          monthlyprice,
+          furnituretype,
+          report
+        )
+        `,
+        [],
+        (tx,result)=>{
+          console.log("create index succcessfully!!!")
+        },
+        (error)=>{
+          console.log("Error creating index",error)
+        }
+      )
       console.log('Connect db successfully!')
     })
 }
